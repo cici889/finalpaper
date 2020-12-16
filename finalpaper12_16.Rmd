@@ -1,0 +1,276 @@
+---
+title: "Time spent with family, self-rated health, workload management seriously affects the stress level of young Canadians"
+author: "Yifan Xu"
+date: "2020/12/9"
+abstract: |
+ | There are multiple factors that affect the stress level of young Canadians. In this paper, we explored the Canadian General Social Survey (GSS), Cycle 30, 2016: Canadians at work and at home, and fitted a regression model based on factors related to the stress level with R. We found that the  self-rated health, time spent with family and workload management seriously affect Canadians’ mental health self assessment. This can not only roughly predict the young adults' stress level, but also provide people with a way to relieve stress, especially during the COVID-19 pandemic.
+ |
+ | **Keywords:** Canadian well being; stress level; Sample survey without replacement ; Self-rated health ; logistic Regression analysis with R.
+output: pdf_document
+bibliography: reference.bib
+---
+
+
+# Introduction
+Stress has always been a common problem among modern people, and different stress occurs at all stages of people's life. According to a survey of Canadians by Ipsos, almost half of Canadians said they feel severely stressed at least once a week, and more than 15% of them said they feel pretty stressed nearly every day. Among these people, compared with the information five years ago, it suggests that young adults undergo greater pressure in life than middle-aged and elderly people. (@citeIpsos) Their pressure may come from family, work and job, close relationships, or related to themselves.The present condition of young people's stress is worthy of attention. Especially in the current COVID-19 epidemic, new diseases have caused people to panic to a certain extent. At the same time, many measures have been taken to prevent the spread of the virus, such as keeping a safe distance during isolation and closing public entertainment venues, making them isolated and lonely, thereby increasing stress and anxiety. (@citeCDC) Therefore, we intend to find the main causes of stress among young adults, the approach to how to relieve their stress, and how to predict their stress level.
+
+We utilized the dataset about Canadian General social survey(GSS), Cycle 30, 2016: Canadians at work and home, which was conducted from August 2 to December 23, 2016. It was a sample survey with a cross-sectional design and covered 10 provinces of Canada. Non-institutionalized personnel aged 15 and above were the target population. This survey provided information on social trends about working conditions, family status, time utilization, and how these factors affect the well beings of Canadians. (@citeGSS) This report mainly examined which of these factors can strongly affect young adults’ stress level and how to predict it. The main method we used is building a generalized linear model GLM (@citedplyr @citetidyverse) in R (@citeR) to measure the relationship between the young adults' stress level and exploratory variables related to inducing or reduce the stress. We find that the time spent with family, self-rated health, workload management seriously affects the stress level of young Canadians.
+
+Below is the data section, we will introduce the data set and focus on several variables we choose, then conduct the logistic regression analysis with R (@citeR) and obtain the logistic regression model, which followed by multiple figures and tables in the result section. Finally in the discussion section, we will discuss our findings based on the model results as well as some weaknesses and opportunities for future work.
+
+# Data
+
+In this paper, we utilized the dataset about Canadian General social survey(GSS), Cycle 30, 2016: Canadians at work and home. The data, user guide and code book can be found at:https://sda-artsci-utoronto-ca.myaccess.library.utoronto.ca/sdaweb/dli2/gss/gss30/gss30/more_doc/index.htm (It can be accessed by faculty, students, and staff member at University of Toronto only.)
+We also used the haven (@citehaven) and janitor packages (@citejanitor) in the data cleaning.
+
+The 2016 GSS was conducted from August 2 to December 23, 2016, and it is a sample survey using a cross-sectional design. Its target population contains all non-institutionalized people over the age of 15 who live in 10 Canadian provinces, except residents from Yukon, Northwest Territories, and Nunavut and full-time institution residents. The frame of this survey was conducted with 2 different components: 1) lists of telephone numbers in use from Statistics Canada and 2) list of all houses in ten provinces from the Address Register (AR). The two main methods of this survey are stratified sampling and random sample without replacement (SSWR). First of all, every record from the survey frame was assigned to one stratum in its province. Next, the SSWR of these records was selected in each stratum. For each family, one person was chosen to complete the online survey or a telephone interview.(@citeGSS)
+
+There were non-response cases in this survey, mainly because the respondents could not be connected, could not provide information, or refused to participate in the survey. In 2016, the response rate of GSS was approximately 50.8%. (@citeGSS) In the process of processing records, there are mainly three ways to deal with a small number of incorrect records or records lacking information, which are completing them, make corrections, or calculated based on other information in the questionnaire. To be specific, according to whether there is some auxiliary information used to model response tendency for each household, there are three types of unresponsive telephone numbers: phone numbers without auxiliary information, phone numbers with some available auxiliary information, and phone numbers with auxiliary information available from Statistics Canada. The approach to deal with non-response is to compensate the non-responders by adjusting the weight of the households responding to the survey. For the first type of non-response, those unresponsive phone numbers were ignored and dropped. Such adjustment was made independently in each stratum. Then for the last 2 types, non-responses adjustments were made independently in their regions. (@citeGSS)
+
+Since SSWR was chosen in this survey, it is inevitable that the estimates of the sampling survey would be affected by sampling errors, which is likely to cause certain biases in the final results. In order to reduce such errors as much as possible, the researchers used sample data to estimate a statistical measure of the standard error and the sampling error. (@citeGSS)
+
+Among the hundreds of variables in this data set, we noticed the variable " SMG_Q01", which is used to measure the stress level of Canadians. Therefore, it is treated as the response variable in our research. Moreover, since we are concerned about the stress of young adults, we choose people 15 to 44 years old as the observations. And we choose the exploratory variables mostly from three aspects: life, work and personal situation, they are: 
+
+- TTLINCG2 Income - Personal income group (before tax)
+- DOS_Q05 Level of satisfaction - Personal appearance 
+- SRH_110  Self rated health in general 
+- FAM_Q03 Level of satisfaction - Amount of time spent as a family
+- WIR_Q01 Management of workload 
+- STJ_Q05 Match between current job and field of education or training
+- ODA_Q01 Did not participate in outdoor activities - Past 12 months 
+
+Figures will show below:
+(we used the ggplot2 package (@citeggplot2))
+
+
+```{r, echo=FALSE}
+knitr::include_graphics("Rplot02.png")
+```
+
+Figure 1:
+
+
+
+```{r, echo=FALSE}
+knitr::include_graphics("sex.png")
+
+
+```
+
+Figure 2:
+
+
+
+```{r, echo=FALSE}
+knitr::include_graphics("incop.png")
+
+
+```
+
+Figure 3:
+
+
+
+```{r, echo=FALSE}
+knitr::include_graphics("work.png")
+
+```
+
+Figure 4:
+
+
+
+```{r, echo=FALSE}
+knitr::include_graphics("match.png")
+
+```
+
+Figure 5:
+
+
+
+```{r, echo=FALSE}
+
+knitr::include_graphics("time.png")
+```
+
+Figure 6:
+
+
+
+```{r, echo=FALSE}
+knitr::include_graphics("health.png")
+
+```
+
+Figure 7:
+
+
+
+```{r, echo=FALSE}
+knitr::include_graphics("res.png")
+
+```
+
+Figure 8:
+
+
+
+Since GSS intends to protect respondent privacy, the options for each survey question  include "Valid skip", "Don’t know", "Refusal”, "Not stated", we deleted them using na.omit() function in R for better analysis. Moreover, as the answer options for multiple survey questions are somewhat similar, we merged these options to facilitate the analysis. For example, regarding the question "how satisfied are you with the amount of time you spend as a family?", the options "Very satisfied" and "satisfied" are combined, and "dissatisfied" and "Very dissatisfied" are combined.
+
+
+In the next section of modeling, we analyzed these variables and how they affected the stress level among young adults. Meanwhile, we used R (@citeR) to obtain a proper logistic regression model with good predictions on stress level among young adults.
+
+
+
+# Model
+
+We plan to use a generalized linear regression model for prediction. Among all these 7 predictors, we find that time spent with family, self-rated health, workload management  have the most predictive effect. Therefore, we obtain a GLM with these predictors using the function gml (we used the dplyr and tidyverse packages (@citedplyr @citetidyverse) in R (@citeR).)
+
+Before building the model, we randomly used 60% of the survey data as a training set and 40% as a test set for the model validation. The training set was used to build the model while the test set was to check our model performance, such as whether each predictor is still significant, and whether the estimated coefficients are similar.
+
+Next, we build a full model with all the selected variables above, and then through deleting and selecting them, we find 4 variables strongly related to the stress level of young adults with effective predictive ability. They are:
+
+- Health.rated: In general, would you say your health is...? 
+(Excellent/ Very good / Good / Fair / Poor)
+- Workload.manage: How often do you consider your workload manageable? 
+(Always / Sometimes / Rarely)
+- Family time: Overall, how satisfied are you with the amount of time you spend as a family?"
+(Satisfied / General / Dissatisfied)
+
+The final logistic regression model we obtain is:
+
+```{r, echo=FALSE}
+knitr::include_graphics("modelf.png")
+
+```
+
+
+
+
+
+## Model Interpretation 
+
+For the right side of the model, -1.3285 is the intersection of the model. There are four exploratory variables. Each variable takes three to five different levels, and these x values can be taken as 0 or 1. 
+For example, for the variable: "Family time: Overall, how satisfied are you with the amount of time you spend as a family?",  there are three different levels: "satisfied", "general", and "dissatisfied". If a person is generally satisfied with the family time, then the coefficient should be set to 1, and the others to 0. If a person is satisfied with the family time, then all other coefficients should be set to 0.
+ 
+For the left side of the model, P represents the possibility that an individual is under high stress. After getting the result on the right side of the model, we can obtain this probability by taking the exponent and a few steps of calculation.
+
+
+```{r, echo=FALSE}
+knitr::include_graphics("5.png")
+
+```
+Figure 9: Accuracy of the model
+
+
+When our model is applied to an independent new data set (test data set), the prediction accuracy of the model is nearly 73.43%. (Assuming the prediction is correct when the predicted probability is greater than 50% )
+
+
+# Results
+
+To ensure that there is no strong correlation between the predictor variables, we check the multicollinearity of each variable by their VIF values. (we used the Car package (@citeCar))
+
+```{r, echo=FALSE}
+knitr::include_graphics("vif.png")
+
+```
+
+Figure 10: VIF values of each predictor
+
+Figure 10 shows that their VIF values are less than 5, indicating that no multicollinearity occurs in the model.
+
+
+```{r, echo=FALSE}
+knitr::include_graphics("1.png")
+
+```
+Figure 11: Model summary built with the training data
+
+(We used the knitr package (@citeKnitr2014 @citeKnitr2015 @citeKnitr2020.))
+
+
+```{r, echo=FALSE}
+knitr::include_graphics("2.png")
+
+```
+
+Figure 12: Model summary built with the test data
+
+(We used the knitr package (@citeKnitr2014 @citeKnitr2015 @citeKnitr2020))
+
+From Figure xx and xx, we compare the two models. Figure xx indicates that just one significant variable was lost, and the estimated coefficients of predictors for the two models are similar.
+
+
+```{r, echo=FALSE}
+knitr::include_graphics("3.png")
+
+```
+
+
+Figure 13: Confidence interval of model coefficients built with the training data 
+
+
+```{r, echo=FALSE}
+knitr::include_graphics("4.png")
+
+```
+
+Figure 14: Confidence interval of model coefficients built with the test data 
+
+
+
+```{r, echo=FALSE}
+knitr::include_graphics("workload1.png")
+```
+
+
+Figure 15: Predicted probability of the stress level on the workload manage
+
+
+```{r, echo=FALSE}
+knitr::include_graphics("health1.png")
+```
+
+Figure 16: Predicted probability of the stress level on the self rated health
+
+
+```{r, echo=FALSE}
+knitr::include_graphics("famil.png")
+```
+
+Figure 17: Predicted probability of the stress level on the time spent with family
+
+
+
+
+
+
+
+
+
+# Discussion
+
+to be continued...
+
+
+
+
+
+# Weakness and Next Step
+
+to be continued...
+
+
+
+
+
+# Appendix
+
+Code for this analysis is available at: https://github.com/cici889/finalpaper
+
+
+# Reference
+
+
+
