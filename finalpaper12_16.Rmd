@@ -1,22 +1,30 @@
 ---
-title: "Time spent with family, self-rated health, workload management seriously affects the stress level of young Canadians"
+title: Time spent with family, self-rated health, workload management seriously affects
+  the stress level of young Canadians
 author: "Yifan Xu"
 date: "2020/12/9"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
 abstract: |
- | There are multiple factors that affect the stress level of young Canadians. In this paper, we explored the Canadian General Social Survey (GSS), Cycle 30, 2016: Canadians at work and at home, and fitted a regression model based on factors related to the stress level with R. We found that the  self-rated health, time spent with family and workload management seriously affect Canadians’ mental health self assessment. This can not only roughly predict the young adults' stress level, but also provide people with a way to relieve stress, especially during the COVID-19 pandemic.
- |
- | **Keywords:** Canadian well being; stress level; Sample survey without replacement ; Self-rated health ; logistic Regression analysis with R.
-output: pdf_document
+  |
+  | There are multiple factors that affect the stress level of young Canadians. In this paper, we explored the Canadian General Social Survey (GSS), Cycle 30, 2016: Canadians at work and at home, and fitted a logistic regression model based on factors related to the stress level with R. We found that the  self-rated health, time spent with family and workload management seriously affect Canadians’ stress level. This can not only roughly predict the young adults' stress level, but also provide people with a way to relieve stress, especially during the COVID-19 pandemic.
+  | **Keywords:** Canadian well being; stress level; Sample survey without replacement ; Self-rated health ; logistic Regression analysis with R.
 bibliography: reference.bib
 ---
 
 
 # Introduction
+
 Stress has always been a common problem among modern people, and different stress occurs at all stages of people's life. According to a survey of Canadians by Ipsos, almost half of Canadians said they feel severely stressed at least once a week, and more than 15% of them said they feel pretty stressed nearly every day. Among these people, compared with the information five years ago, it suggests that young adults undergo greater pressure in life than middle-aged and elderly people. (@citeIpsos) Their pressure may come from family, work and job, close relationships, or related to themselves.The present condition of young people's stress is worthy of attention. Especially in the current COVID-19 epidemic, new diseases have caused people to panic to a certain extent. At the same time, many measures have been taken to prevent the spread of the virus, such as keeping a safe distance during isolation and closing public entertainment venues, making them isolated and lonely, thereby increasing stress and anxiety. (@citeCDC) Therefore, we intend to find the main causes of stress among young adults, the approach to how to relieve their stress, and how to predict their stress level.
 
 We utilized the dataset about Canadian General social survey(GSS), Cycle 30, 2016: Canadians at work and home, which was conducted from August 2 to December 23, 2016. It was a sample survey with a cross-sectional design and covered 10 provinces of Canada. Non-institutionalized personnel aged 15 and above were the target population. This survey provided information on social trends about working conditions, family status, time utilization, and how these factors affect the well beings of Canadians. (@citeGSS) This report mainly examined which of these factors can strongly affect young adults’ stress level and how to predict it. The main method we used is building a generalized linear model GLM (@citedplyr @citetidyverse) in R (@citeR) to measure the relationship between the young adults' stress level and exploratory variables related to inducing or reduce the stress. We find that the time spent with family, self-rated health, workload management seriously affects the stress level of young Canadians.
 
-Below is the data section, we will introduce the data set and focus on several variables we choose, then conduct the logistic regression analysis with R (@citeR) and obtain the logistic regression model, which followed by multiple figures and tables in the result section. Finally in the discussion section, we will discuss our findings based on the model results as well as some weaknesses and opportunities for future work.
+Below is the data section, we will introduce the data set and focus on several variables we choose, then conduct the logistic regression analysis with R (@citeR) and obtain the logistic regression model, which followed by multiple figures and tables in the result section. Finally in the discussion section, we will discuss our findings based on the model results as well as some weaknesses and opportunities for future work. 
+
+We used R markdown to produce this paper. (@citermarkdown1 @citermarkdown2)
+
 
 # Data
 
@@ -37,37 +45,46 @@ Among the hundreds of variables in this data set, we noticed the variable " SMG_
 - FAM_Q03 Level of satisfaction - Amount of time spent as a family
 - WIR_Q01 Management of workload 
 - STJ_Q05 Match between current job and field of education or training
-- ODA_Q01 Did not participate in outdoor activities - Past 12 months 
+
 
 Figures will show below:
 (we used the ggplot2 package (@citeggplot2))
 
 
+
 ```{r, echo=FALSE}
 knitr::include_graphics("Rplot02.png")
+
 ```
 
-Figure 1:
+Figure 1
+
+
+The x-axis is expressed as 15 to 24 years, 25 to 34 years, 35 to 44 years, 45 to 54 years, 55 to 64 years, 65 to 74 years, 75 years and over, Valid skip, Don’t know, Refusal, and Not stated.
+
 
 
 
 ```{r, echo=FALSE}
 knitr::include_graphics("sex.png")
 
-
 ```
 
-Figure 2:
+Figure 2
+
+The x-axis is expressed as Male and Female.
+
 
 
 
 ```{r, echo=FALSE}
 knitr::include_graphics("incop.png")
 
-
 ```
 
-Figure 3:
+Figure 3
+
+The x-axis is expressed as: Less than 25,000, 25,000 to 49,999, 50,000 to 74,999, 75,000 to 99,999, 100,000 to 124,999, 125,000 or more, Valid skip, Don’t know, Refusal and Not stated.
 
 
 
@@ -76,7 +93,11 @@ knitr::include_graphics("work.png")
 
 ```
 
-Figure 4:
+Figure 4
+
+The x-axis is expressed as Always, Often, Sometimes, Rarely, Never Valid skip, Don’t know, Refusal, and Not stated.
+
+
 
 
 
@@ -85,16 +106,22 @@ knitr::include_graphics("match.png")
 
 ```
 
-Figure 5:
+Figure 5
+
+The x-axis is expressed as Completely, Mostly, Somewhat, Mostly not, Not at all, Valid skip, Don’t know, Refusal, and Not stated.
+
+
 
 
 
 ```{r, echo=FALSE}
-
 knitr::include_graphics("time.png")
 ```
 
-Figure 6:
+Figure 6
+
+The x-axis is expressed as Very satisfied, Satisfied, Neither satisfied nor dissatisfied, Dissatisfied, Very dissatisfied, Valid skip, Don’t know, Refusal, and Not stated.
+
 
 
 
@@ -103,7 +130,10 @@ knitr::include_graphics("health.png")
 
 ```
 
-Figure 7:
+Figure 7
+
+The x-axis is expressed as Excellent, Very good, Good, Fair, Valid skip, Don’t know, Refusal, and Not stated.
+
 
 
 
@@ -112,8 +142,16 @@ knitr::include_graphics("res.png")
 
 ```
 
-Figure 8:
+Figure 8
 
+As the x-axis increases, satisfaction of respondents’ increases.
+
+
+
+From Figure 1 and Figure 2, we can see that the 15-44 year-olds account for about half of the respondents. Also, there are nearly 1,500 more women than men among these respondents.
+
+
+Figure 3 indicates that the distribution of income is right-skewed. Most people earn less than 25,000 CAD, and the high-income group only accounts for a small part. Regarding the question of whether the workload is manageable, the vast majority of people chose to skip this question. Among those who answered it, most often believed the workload was manageable (shown in figure 4). In the self-assessment of general health, most respondents feel that their health state is very good (shown in figure 7). Besides, most of them are also satisfied with the time spent as a family (shown in figure 6).
 
 
 Since GSS intends to protect respondent privacy, the options for each survey question  include "Valid skip", "Don’t know", "Refusal”, "Not stated", we deleted them using na.omit() function in R for better analysis. Moreover, as the answer options for multiple survey questions are somewhat similar, we merged these options to facilitate the analysis. For example, regarding the question "how satisfied are you with the amount of time you spend as a family?", the options "Very satisfied" and "satisfied" are combined, and "dissatisfied" and "Very dissatisfied" are combined.
@@ -152,6 +190,7 @@ knitr::include_graphics("modelf.png")
 ## Model Interpretation 
 
 For the right side of the model, -1.3285 is the intersection of the model. There are four exploratory variables. Each variable takes three to five different levels, and these x values can be taken as 0 or 1. 
+
 For example, for the variable: "Family time: Overall, how satisfied are you with the amount of time you spend as a family?",  there are three different levels: "satisfied", "general", and "dissatisfied". If a person is generally satisfied with the family time, then the coefficient should be set to 1, and the others to 0. If a person is satisfied with the family time, then all other coefficients should be set to 0.
  
 For the left side of the model, P represents the possibility that an individual is under high stress. After getting the result on the right side of the model, we can obtain this probability by taking the exponent and a few steps of calculation.
@@ -161,7 +200,8 @@ For the left side of the model, P represents the possibility that an individual 
 knitr::include_graphics("5.png")
 
 ```
-Figure 9: Accuracy of the model
+
+Figure 8: Accuracy of the model
 
 
 When our model is applied to an independent new data set (test data set), the prediction accuracy of the model is nearly 73.43%. (Assuming the prediction is correct when the predicted probability is greater than 50% )
@@ -171,44 +211,51 @@ When our model is applied to an independent new data set (test data set), the pr
 
 To ensure that there is no strong correlation between the predictor variables, we check the multicollinearity of each variable by their VIF values. (we used the Car package (@citeCar))
 
+
 ```{r, echo=FALSE}
 knitr::include_graphics("vif.png")
 
 ```
 
-Figure 10: VIF values of each predictor
+Figure 9: VIF values of each predictor
 
-Figure 10 shows that their VIF values are less than 5, indicating that no multicollinearity occurs in the model.
+
+
 
 
 ```{r, echo=FALSE}
+
 knitr::include_graphics("1.png")
 
 ```
-Figure 11: Model summary built with the training data
+Figure 10: Model summary built with the training data
 
 (We used the knitr package (@citeKnitr2014 @citeKnitr2015 @citeKnitr2020.))
 
 
+
 ```{r, echo=FALSE}
+
 knitr::include_graphics("2.png")
 
 ```
 
-Figure 12: Model summary built with the test data
+Figure 11: Model summary built with the test data
 
 (We used the knitr package (@citeKnitr2014 @citeKnitr2015 @citeKnitr2020))
 
-From Figure xx and xx, we compare the two models. Figure xx indicates that just one significant variable was lost, and the estimated coefficients of predictors for the two models are similar.
+
 
 
 ```{r, echo=FALSE}
+
 knitr::include_graphics("3.png")
 
 ```
 
 
-Figure 13: Confidence interval of model coefficients built with the training data 
+Figure 12: Confidence interval of model coefficients built with the training data 
+
 
 
 ```{r, echo=FALSE}
@@ -216,7 +263,8 @@ knitr::include_graphics("4.png")
 
 ```
 
-Figure 14: Confidence interval of model coefficients built with the test data 
+Figure 13: Confidence interval of model coefficients built with the test data 
+
 
 
 
@@ -225,49 +273,65 @@ knitr::include_graphics("workload1.png")
 ```
 
 
-Figure 15: Predicted probability of the stress level on the workload manage
+Figure 14: Predicted probability of the stress level on the workload manage
+
+
 
 
 ```{r, echo=FALSE}
 knitr::include_graphics("health1.png")
 ```
 
-Figure 16: Predicted probability of the stress level on the self rated health
+Figure 15: Predicted probability of the stress level on the self rated health
+
+
 
 
 ```{r, echo=FALSE}
 knitr::include_graphics("famil.png")
 ```
 
-Figure 17: Predicted probability of the stress level on the time spent with family
+Figure 16: Predicted probability of the stress level on the time spent with family
 
 
 
+Figure 9 shows that their VIF values are less than 5, indicating that no multicollinearity occurs in the model.
 
+From Figure 10 and 11, we compare the two models. Figure xx indicates that just one significant variable was lost, and the estimated coefficients of predictors for the two models are similar.
 
-
+Figure 14-16 will occur in the discussion section.
 
 
 
 # Discussion
 
-to be continued...
+To explore the relationship between each predictor variable and the stress level, we look at the fourth column of Figure xx, which contains the p-value of each predictor. P-value means the probability at least or more extreme than the observed values. When the P-value is less than 0.05, it means that we have enough evidence to reject the null hypothesis. Otherwise, we fail to reject the null hypothesis. In this case, the null hypothesis was set as "there is no strong relationship between the stress level and that predictor".
+Through the fourth column in Figure 10, we find that the P-value of all predictors is less than 0.05, indicating that self-rated health, amount of time spent as a family, workload management are strongly related to the stress level.
 
+Next, we will explain how each predictor affects the stress level and apply our model results to a big world.
 
+Figure 14-16 shows the predictive probability of each predictor.
 
+Figure 15 shows the impact of people's general health self-assessment on stress. Here, 1 in the x-axis means that people are very satisfied with their health assessment, and 5 means that people are very poor with their health assessment. We can see that the better respondents rated their health, the lower their stress level would be. Figure 14 shows the effect of people's workload management on stress levels. As the x-axis increases, the workload is rarely manageable to the respondents. For those respondents who are not able to manage their workload, their stress levels would be higher. And these predictions for the possibility are concentrated between 0.7-1, which is pretty high. The 2019 Workplace Health Report, released by Zhaopin Recruitment, surveyed more than 6,000 workplace people about their health and lifestyle. Among these 6000 young adults, only one-fifth of them believed that they are in good health, and more than 30% feel their health is very poor. They are mostly worried about cervical and lumbar problems caused by long-term work, which exacerbating their anxiety and stress.(@citewh)
+
+Figure 16 shows how satisfied people are with the amount of time spent as a family. 1 in the x-axis means respondents are satisfied, 2 means they feel general, and 3 means they are not satisfied with the amount of time. From this picture, we can see that respondents who are more satisfied with the amount of time spent with families are under lower stress.  It's obvious that modern life is very busy. Especially for young adults, they spend most of their time at work and spend less time with their families. According to the findings of Gallup Healthways, social time is one of the main reasons for the fluctuation of the daily happiness-stress levels. Likewise, it's happiest when spending about 6 hours with family and friends (@citeGALLUP). Therefore, try to be with family. It could be eating together, or chatting in the yard to relax and relieve stress (@citeTime).
 
 
 # Weakness and Next Step
 
-to be continued...
+First of all, we have a bit of concern about the model selection. We excluded the linear regression model first, and this is because the variables we focus on are categories, it is hard to fit a linear relationship. Besides, the final model we selected is the logistic regression model. However, the logistic model is often used in two classifications, but the stress level cannot be answered simply with "yes" or "no". When we extracted the data, we considered "high-stress level" as "yes", and "low-stress level"  as "no". In this way, we lost the data on "moderate-stress level".
 
+Besides, we selected young adults aged 15-44, but the main sources of stress for different age groups will also be different. For instance, for adolescents in their 20s, the stress from the study is more intense. For people in their 30s, the main sources of stress probably are work or intimacy. Therefore, the 15-44 age group we choose is somewhat broad. In future research, we can subdivide the age by ten years, and then conduct analysis separately. For example, to increase the accuracy in prediction, three age groups of 15-24 years, 25-34, 35-44 years can be modeled separately.
 
+Moreover, inducing or reduce stress is related to multiple factors, such as study, regular exercise. However, these aspects were not included in the survey. Therefore, it is not been considered in our analysis and model building. In the next step, we intend to find a different data set that covers these aspects. Thus, we could explore the relationship between exercise and stress. If there is a strong relationship, it can better provide people with new approaches to relieve stress.
 
 
 
 # Appendix
 
 Code for this analysis is available at: https://github.com/cici889/finalpaper
+
+
 
 
 # Reference
