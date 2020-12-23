@@ -17,9 +17,10 @@ bibliography: reference.bib
 
 # Introduction
 
-Stress has always been a common problem among modern people, and different stress occurs at all stages of people's life. According to a survey of Canadians by Ipsos, almost half of Canadians said they feel severely stressed at least once a week, and more than 15% of them said they feel pretty stressed nearly every day. Among these people, compared with the information five years ago, it suggests that young adults undergo greater pressure in life than middle-aged and elderly people. (@citeIpsos) Their pressure may come from family, work and job, close relationships, or related to themselves.The present condition of young people's stress is worthy of attention. Especially in the current COVID-19 epidemic, new diseases have caused people to panic to a certain extent. At the same time, many measures have been taken to prevent the spread of the virus, such as keeping a safe distance during isolation and closing public entertainment venues, making them isolated and lonely, thereby increasing stress and anxiety. (@citeCDC) Therefore, we intend to find the main causes of stress among young adults, the approach to how to relieve their stress, and how to predict their stress level.
+Stress has always been a common problem among modern people, and different stress occurs at all stages of people's life. According to a survey of Canadians by Ipsos, almost half of Canadians said they feel severely stressed at least once a week, and more than 15% of them said they feel pretty stressed nearly every day. Compared with the information five years ago, it suggests that young adults undergo greater pressure in life than middle-aged and elderly people. (@citeIpsos) Their pressure may come from family, work and job, close relationships, or related to themselves.The present condition of young people's stress is worthy of attention. Especially in the current COVID-19 epidemic, new diseases have caused people to panic to a certain extent. At the same time, many measures taken to prevent the spread of the virus, such as keeping a safe distance during isolation and the closing of public entertainment, making them isolated and lonely, thereby increasing stress and anxiety. (@citeCDC) Therefore, we intend to find the main causes of stress among young adults, the approach to relieve their stress, and how to predict their stress level.
 
-We utilized the dataset about Canadian General social survey(GSS), Cycle 30, 2016: Canadians at work and home, which was conducted from August 2 to December 23, 2016. It was a sample survey with a cross-sectional design and covered 10 provinces of Canada. Non-institutionalized personnel aged 15 and above were the target population. This survey provided information on social trends about working conditions, family status, time utilization, and how these factors affect the well beings of Canadians. (@citeGSS) This report mainly examined which of these factors can strongly affect young adults’ stress level and how to predict it. The main method we used is building a generalized linear model GLM (@citedplyr @citetidyverse) in R (@citeR) to measure the relationship between the young adults' stress level and exploratory variables related to inducing or reduce the stress. We find that the time spent with family, self-rated health, workload management seriously affects the stress level of young Canadians.
+
+We utilized the dataset about Canadian General social survey(GSS), Cycle 30, 2016: Canadians at work and home, which was conducted from August 2 to December 23, 2016. It was a sample survey with a cross-sectional design and covered 10 provinces of Canada. Non-institutionalized personnel aged 15 and above were the target population. This survey provided information on social trends about working conditions, family status, time utilization, and how these factors affect the well beings of Canadians. (@citeGSS) This report mainly examined which of these factors can strongly affect young adults’ stress level and how to predict it. The main method we used is building a logistic regression model GLM (@citedplyr @citetidyverse) in R (@citeR) to measure the relationship between the young adults' stress level and exploratory variables related to induce or reduce the stress. We find that the time spent with family, self-rated health, workload management seriously affects the stress level of young Canadians.
 
 Below is the data section, we will introduce the data set and focus on several variables we choose, then conduct the logistic regression analysis with R (@citeR) and obtain the logistic regression model, which followed by multiple figures and tables in the result section. Finally in the discussion section, we will discuss our findings based on the model results as well as some weaknesses and opportunities for future work. 
 
@@ -28,16 +29,15 @@ We used R markdown to produce this paper. (@citermarkdown1 @citermarkdown2)
 
 # Data
 
-In this paper, we utilized the dataset about Canadian General social survey(GSS), Cycle 30, 2016: Canadians at work and home. The data, user guide and code book can be found at:https://sda-artsci-utoronto-ca.myaccess.library.utoronto.ca/sdaweb/dli2/gss/gss30/gss30/more_doc/index.htm (It can be accessed by faculty, students, and staff member at University of Toronto only.)
-We also used the haven (@citehaven) and janitor packages (@citejanitor) in the data cleaning.
+In this paper, we utilized the dataset about Canadian General social survey(GSS), Cycle 30, 2016: Canadians at work and home. The data, user guide and code book can be found at:https://sda-artsci-utoronto-ca.myaccess.library.utoronto.ca/sdaweb/dli2/gss/gss30/gss30/more_doc/index.htm (It can be accessed by faculty, students, and staff member at University of Toronto only.) We also used the haven (@citehaven) and janitor packages (@citejanitor) in the data cleaning.
 
-The 2016 GSS was conducted from August 2 to December 23, 2016, and it is a sample survey using a cross-sectional design. Its target population contains all non-institutionalized people over the age of 15 who live in 10 Canadian provinces, except residents from Yukon, Northwest Territories, and Nunavut and full-time institution residents. The frame of this survey was conducted with 2 different components: 1) lists of telephone numbers in use from Statistics Canada and 2) list of all houses in ten provinces from the Address Register (AR). The two main methods of this survey are stratified sampling and random sample without replacement (SSWR). First of all, every record from the survey frame was assigned to one stratum in its province. Next, the SSWR of these records was selected in each stratum. For each family, one person was chosen to complete the online survey or a telephone interview.(@citeGSS)
+The 2016 GSS was conducted from the beginning of August to the end of December, 2016, and it is a sample survey using a cross-sectional design. Its target population contains all non-institutionalized people over the age of 15 who live in 10 Canadian provinces, except residents from Yukon, Northwest Territories, and Nunavut and full-time institution residents. The frame of this survey was conducted with 2 different components: 1) lists of telephone numbers in use from Statistics Canada and 2) list of all houses in ten provinces from the Address Register (AR). The two main methods of this survey are stratified sampling and simple random sampling without replacement (SRSWOR). First of all, every record from the survey frame was assigned to one stratum in its province. Next, the SRSWOR of these records was selected in each stratum. For each family, one person was chosen to complete the online survey or a telephone interview.(@citeGSS)
 
-There were non-response cases in this survey, mainly because the respondents could not be connected, could not provide information, or refused to participate in the survey. In 2016, the response rate of GSS was approximately 50.8%. (@citeGSS) In the process of processing records, there are mainly three ways to deal with a small number of incorrect records or records lacking information, which are completing them, make corrections, or calculated based on other information in the questionnaire. To be specific, according to whether there is some auxiliary information used to model response tendency for each household, there are three types of unresponsive telephone numbers: phone numbers without auxiliary information, phone numbers with some available auxiliary information, and phone numbers with auxiliary information available from Statistics Canada. The approach to deal with non-response is to compensate the non-responders by adjusting the weight of the households responding to the survey. For the first type of non-response, those unresponsive phone numbers were ignored and dropped. Such adjustment was made independently in each stratum. Then for the last 2 types, non-responses adjustments were made independently in their regions. (@citeGSS)
+There were non-response cases in this survey, mainly because the respondents could not be connected, could not provide information, or refused to participate in the survey. In 2016, the response rate of GSS was approximately 50.8%. (@citeGSS) During records processing, there are mainly three ways to deal with a small number of incorrect records or records lacking information, which are completing them, make corrections, or calculated from other information in the questionnaire. To be specific, according to whether there is some auxiliary information used to model response tendency for each household, there are three types of unresponsive telephone numbers: phone numbers without auxiliary information, phone numbers with some available auxiliary information, and phone numbers with auxiliary information available from Statistics Canada. The approach to deal with non-response is to compensate the non-responders by adjusting the weight of the households responding to the survey. For the first type of non-response, those unresponsive phone numbers were ignored and dropped. Such adjustment was made independently in each stratum. Then for the last 2 types, non-responses adjustments were made independently in their regions. (@citeGSS)
 
-Since SSWR was chosen in this survey, it is inevitable that the estimates of the sampling survey would be affected by sampling errors, which is likely to cause certain biases in the final results. In order to reduce such errors as much as possible, the researchers used sample data to estimate a statistical measure of the standard error and the sampling error. (@citeGSS)
+Since SRSWOR was chosen in this survey, it is inevitable that the estimates of the sampling survey would be affected by sampling errors, probably causing certain biases in the final results. In order to reduce such errors as much as possible, the researchers used sample data to estimate a statistical measure of the standard error and the sampling error. (@citeGSS)
 
-Among the hundreds of variables in this data set, we noticed the variable " SMG_Q01", which is used to measure the stress level of Canadians. Therefore, it is treated as the response variable in our research. Moreover, since we are concerned about the stress of young adults, we choose people 15 to 44 years old as the observations. And we choose the exploratory variables mostly from three aspects: life, work and personal situation, they are: 
+Among the hundreds of variables in this data set, we noticed the variable " SMG_Q01", which is to measure the stress level of Canadians. Therefore, it is treated as the response variable in our research. Moreover, since we are concerned about the stress of young adults, we choose people 15 to 44 years old as the observations. And we choose the exploratory variables mostly from three aspects: life, work and personal situation, they are: 
 
 - TTLINCG2 Income - Personal income group (before tax)
 - DOS_Q05 Level of satisfaction - Personal appearance 
@@ -151,23 +151,23 @@ As the x-axis increases, satisfaction of respondents’ increases.
 From Figure 1 and Figure 2, we can see that the 15-44 year-olds account for about half of the respondents. Also, there are nearly 1,500 more women than men among these respondents.
 
 
-Figure 3 indicates that the distribution of income is right-skewed. Most people earn less than 25,000 CAD, and the high-income group only accounts for a small part. Regarding the question of whether the workload is manageable, the vast majority of people chose to skip this question. Among those who answered it, most often believed the workload was manageable (shown in figure 4). In the self-assessment of general health, most respondents feel that their health state is very good (shown in figure 7). Besides, most of them are also satisfied with the time spent as a family (shown in figure 6).
+Figure 3 indicates that the distribution of income is right-skewed. Most people earn less than 25,000 CAD, and the high-income group only accounts for a small part. Regarding the question of whether the workload is manageable, the vast majority of people skipped it. Among those who answered it, most often believed that the workload was manageable (shown in figure 4). In the self-assessment of general health, most respondents felt that their health state is very good (shown in figure 7). Besides, most of the respondents are also satisfied with the time spent as a family (shown in figure 6).
 
 
-Since GSS intends to protect respondent privacy, the options for each survey question  include "Valid skip", "Don’t know", "Refusal”, "Not stated", we deleted them using na.omit() function in R for better analysis. Moreover, as the answer options for multiple survey questions are somewhat similar, we merged these options to facilitate the analysis. For example, regarding the question "how satisfied are you with the amount of time you spend as a family?", the options "Very satisfied" and "satisfied" are combined, and "dissatisfied" and "Very dissatisfied" are combined.
+Since GSS intends to protect respondent privacy, the options for each survey question  include "Valid skip", "Don’t know", "Refusal”, "Not stated", we deleted them using na.omit() function in R for better analysis. Moreover, as the answer options for multiple survey questions are somewhat similar, we merged these options. For example, regarding the question "how satisfied are you with the amount of time you spend as a family?", the options "Very satisfied" and "satisfied" are combined, and "dissatisfied" and "Very dissatisfied" are combined.
 
 
-In the next section of modeling, we analyzed these variables and how they affected the stress level among young adults. Meanwhile, we used R (@citeR) to obtain a proper logistic regression model with good predictions on stress level among young adults.
+In the next section of modeling, we analyzed these variables and how they affected the stress level among young adults. Meanwhile, we used R (@citeR) to obtain a proper logistic regression model with good predictions on stress level in young adults.
 
 
 
 # Model
 
-We plan to use a generalized linear regression model for prediction. Among all these 7 predictors, we find that time spent with family, self-rated health, workload management  have the most predictive effect. Therefore, we obtain a GLM with these predictors using the function gml (we used the dplyr and tidyverse packages (@citedplyr @citetidyverse) in R (@citeR).)
+We plan to use a generalized linear regression model for prediction. Among all these 7 predictors, we find that time spent with family, self-rated health, workload management  have the most predictive effect. Therefore, we obtain a logistic regression model with these predictors using the function glm (we used the dplyr and tidyverse packages (@citedplyr @citetidyverse) in R (@citeR).)
 
-Before building the model, we randomly used 60% of the survey data as a training set and 40% as a test set for the model validation. The training set was used to build the model while the test set was to check our model performance, such as whether each predictor is still significant, and whether the estimated coefficients are similar.
+Before building the model, we randomly used 60% of the survey data as a training set and 40% as a test set for the model validation. The training set was used to build the model while the test set was to check the model performance, such as whether each predictor is still significant, and whether two estimated coefficients are similar.
 
-Next, we build a full model with all the selected variables above, and then through deleting and selecting them, we find 4 variables strongly related to the stress level of young adults with effective predictive ability. They are:
+Next, we build a full model with all the selected variables above, and then through deleting and selecting, we find 3 variables strongly related to the stress level of young adults with effective predictive ability. They are:
 
 - Health.rated: In general, would you say your health is...? 
 (Excellent/ Very good / Good / Fair / Poor)
@@ -189,7 +189,7 @@ knitr::include_graphics("modelf.png")
 
 ## Model Interpretation 
 
-For the right side of the model, -1.3285 is the intersection of the model. There are four exploratory variables. Each variable takes three to five different levels, and these x values can be taken as 0 or 1. 
+For the right side of the model, -1.3285 is the intersection. There are three exploratory variables. Each variable takes three to five different levels, and these x values can be taken as 0 or 1. 
 
 For example, for the variable: "Family time: Overall, how satisfied are you with the amount of time you spend as a family?",  there are three different levels: "satisfied", "general", and "dissatisfied". If a person is generally satisfied with the family time, then the coefficient should be set to 1, and the others to 0. If a person is satisfied with the family time, then all other coefficients should be set to 0.
  
@@ -206,10 +206,12 @@ Figure 8: Accuracy of the model
 
 When our model is applied to an independent new data set (test data set), the prediction accuracy of the model is nearly 73.43%. (Assuming the prediction is correct when the predicted probability is greater than 50% )
 
+Multi-collinearity check will be discussed in the results session and model diagnostic will be performed in the discussion section.
+
 
 # Results
 
-To ensure that there is no strong correlation between the predictor variables, we check the multicollinearity of each variable by their VIF values. (we used the Car package (@citeCar))
+To ensure that there is no strong correlation between the predictor variables, we check the multicollinearity of each variable by their VIF values. (we used the Car package (@citeCar)) Bigger than 5 indicates some collinearity in predictors.
 
 
 ```{r, echo=FALSE}
@@ -291,22 +293,22 @@ Figure 15: Predicted probability of the stress level on the self rated health
 knitr::include_graphics("famil.png")
 ```
 
-Figure 16: Predicted probability of the stress level on the time spent with family
+Figure 16: Predicted probability of the stress level on the time spent with a family
 
 
 
-Figure 9 shows that their VIF values are less than 5, indicating that no multicollinearity occurs in the model.
+Figure 9 shows that their VIF values are less than 5, indicating that no multicollinearity occurs in predictors.
 
-From Figure 10 and 11, we compare the two models. Figure xx indicates that just one significant variable was lost, and the estimated coefficients of predictors for the two models are similar.
-
-Figure 14-16 will occur in the discussion section.
+Figure 10,11 and 14-16 will be discussed in the next section.
 
 
 
 # Discussion
 
-To explore the relationship between each predictor variable and the stress level, we look at the fourth column of Figure xx, which contains the p-value of each predictor. P-value means the probability at least or more extreme than the observed values. When the P-value is less than 0.05, it means that we have enough evidence to reject the null hypothesis. Otherwise, we fail to reject the null hypothesis. In this case, the null hypothesis was set as "there is no strong relationship between the stress level and that predictor".
+To explore the relationship between each predictor variable and the stress level, we look at the fourth column of Figure 10, which contains the p-value of each predictor. P-value means the probability at least or more extreme than the observed values. When the P-value is less than 0.05, it means that we have enough evidence to reject the null hypothesis. Otherwise, we fail to reject the null hypothesis. In this case, the null hypothesis was set as "there is no strong relationship between the stress level and that predictor".
 Through the fourth column in Figure 10, we find that the P-value of all predictors is less than 0.05, indicating that self-rated health, amount of time spent as a family, workload management are strongly related to the stress level.
+
+From Figure 10 and 11, we compare the two models. By looking at P-values in figures 11, just one significant variable was lost (with P-value > 0.05), and the estimated coefficients of predictors for two models are similar.
 
 Next, we will explain how each predictor affects the stress level and apply our model results to a big world.
 
@@ -319,11 +321,11 @@ Figure 16 shows how satisfied people are with the amount of time spent as a fami
 
 # Weakness and Next Step
 
-First of all, we have a bit of concern about the model selection. We excluded the linear regression model first, and this is because the variables we focus on are categories, it is hard to fit a linear relationship. Besides, the final model we selected is the logistic regression model. However, the logistic model is often used in two classifications, but the stress level cannot be answered simply with "yes" or "no". When we extracted the data, we considered "high-stress level" as "yes", and "low-stress level"  as "no". In this way, we lost the data on "moderate-stress level".
+First of all, we have a bit of concern about the model selection. We excluded the linear regression model first, and this is because the variables we focus on are categories, it is hard to fit a linear line. Besides, the final model we selected is the logistic regression model, which is often used in two classifications. However, the stress level cannot be answered simply with "yes" or "no". When we extracted the data, we considered "high-stress level" as "yes", and "low-stress level"  as "no". In this way, we lost the data on "moderate-stress level".
 
-Besides, we selected young adults aged 15-44, but the main sources of stress for different age groups will also be different. For instance, for adolescents in their 20s, the stress from the study is more intense. For people in their 30s, the main sources of stress probably are work or intimacy. Therefore, the 15-44 age group we choose is somewhat broad. In future research, we can subdivide the age by ten years, and then conduct analysis separately. For example, to increase the accuracy in prediction, three age groups of 15-24 years, 25-34, 35-44 years can be modeled separately.
+Moreover, we selected young adults aged 15-44 at once, but the main sources of stress for different age groups will also be different. For instance, for adolescents in their 20s, the stress from the study is more intense. For people in their 30s, the main sources of stress probably are work or intimacy. Therefore, the 15-44 age group we choose is somewhat broad. In future research, we can subdivide the age by ten years, and then conduct analysis separately. For example, to increase the accuracy in prediction, three age groups of 15-24 years, 25-34, 35-44 years can be modeled separately.
 
-Moreover, inducing or reduce stress is related to multiple factors, such as study, regular exercise. However, these aspects were not included in the survey. Therefore, it is not been considered in our analysis and model building. In the next step, we intend to find a different data set that covers these aspects. Thus, we could explore the relationship between exercise and stress. If there is a strong relationship, it can better provide people with new approaches to relieve stress.
+Furthermore, inducing or reducing stress is related to multiple factors, such as study, regular exercise. However, these aspects were not included in the survey. Therefore, it is not been considered in our analysis and model building. In the next step, we intend to find a different data set that covers these aspects. Thus, we could explore the relationship between exercise and stress. If there is a strong relationship, it can better provide people with new approaches to relieve stress.
 
 
 
