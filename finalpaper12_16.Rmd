@@ -2,7 +2,7 @@
 title: Time spent with family, self-rated health, workload management seriously affects
   the stress level of young Canadians
 author: "Yifan Xu"
-date: "2020/12/9"
+date: "December 9, 2020"
 output:
   pdf_document: default
   html_document:
@@ -78,6 +78,7 @@ The x-axis is expressed as Male and Female.
 
 
 ```{r, echo=FALSE}
+
 knitr::include_graphics("incop.png")
 
 ```
@@ -89,6 +90,7 @@ The x-axis is expressed as: Less than 25,000, 25,000 to 49,999, 50,000 to 74,999
 
 
 ```{r, echo=FALSE}
+
 knitr::include_graphics("work.png")
 
 ```
@@ -102,6 +104,7 @@ The x-axis is expressed as Always, Often, Sometimes, Rarely, Never Valid skip, D
 
 
 ```{r, echo=FALSE}
+
 knitr::include_graphics("match.png")
 
 ```
@@ -115,6 +118,7 @@ The x-axis is expressed as Completely, Mostly, Somewhat, Mostly not, Not at all,
 
 
 ```{r, echo=FALSE}
+
 knitr::include_graphics("time.png")
 ```
 
@@ -138,6 +142,7 @@ The x-axis is expressed as Excellent, Very good, Good, Fair, Valid skip, Don’t
 
 
 ```{r, echo=FALSE}
+
 knitr::include_graphics("res.png")
 
 ```
@@ -145,6 +150,7 @@ knitr::include_graphics("res.png")
 Figure 8
 
 As the x-axis increases, satisfaction of respondents’ increases.
+
 
 
 
@@ -163,7 +169,9 @@ In the next section of modeling, we analyzed these variables and how they affect
 
 # Model
 
-We plan to use a generalized linear regression model for prediction. Among all these 7 predictors, we find that time spent with family, self-rated health, workload management  have the most predictive effect. Therefore, we obtain a logistic regression model with these predictors using the function glm (we used the dplyr and tidyverse packages (@citedplyr @citetidyverse) in R (@citeR).)
+Logistic regression distinguishes two types, and the output result is the probability of an event. Thereby, if a logistic regression model is applied, the final result can indicate the possibility that a person is under high pressure. This matches what we want to study, so we plan to build a logistic regression model.
+
+Among all these 7 predictors, we find that the time spent with family, self-rated health, workload management have the most predictive effect. Therefore, we obtain a logistic regression model with these predictors using the function glm (we used the dplyr and tidyverse packages (@citedplyr @citetidyverse) in R (@citeR).)
 
 Before building the model, we randomly used 60% of the survey data as a training set and 40% as a test set for the model validation. The training set was used to build the model while the test set was to check the model performance, such as whether each predictor is still significant, and whether two estimated coefficients are similar.
 
